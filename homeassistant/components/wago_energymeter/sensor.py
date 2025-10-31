@@ -308,6 +308,8 @@ class WAGO_MID_Voltage(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfElectricPotential.VOLT
     _attr_device_class = SensorDeviceClass.VOLTAGE
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 2
 
     def __init__(
         self, meter, number: int, entry_id: str, device_info: DeviceInfo
@@ -341,7 +343,7 @@ class WAGO_MID_Voltage(SensorEntity):
             return
 
         try:
-            voltage_fun = getattr(self._meter, f"getUL{self._number}")
+            voltage_fun = getattr(self._meter, f"get_voltage_l{self._number}")
             x = voltage_fun()
             _LOGGER.debug("Get Value: %s", round(x, 4))
             self._attr_native_value = x
@@ -368,6 +370,8 @@ class WAGO_MID_Current(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfElectricCurrent.AMPERE
     _attr_device_class = SensorDeviceClass.CURRENT
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, meter, number: int, entry_id: str, device_info: DeviceInfo
@@ -398,7 +402,7 @@ class WAGO_MID_Current(SensorEntity):
             return
 
         try:
-            current_fun = getattr(self._meter, f"getIL{self._number}")
+            current_fun = getattr(self._meter, f"get_current_l{self._number}")
             x = current_fun()
             _LOGGER.debug("Get Value: %s", round(x, 4))
             self._attr_native_value = x
@@ -425,6 +429,8 @@ class WAGO_MID_Power(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfPower.WATT
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self, meter, number: int, entry_id: str, device_info: DeviceInfo
@@ -455,7 +461,7 @@ class WAGO_MID_Power(SensorEntity):
             return
 
         try:
-            power_fun = getattr(self._meter, f"getPL{self._number}")
+            power_fun = getattr(self._meter, f"get_power_l{self._number}")
             x = power_fun()
             _LOGGER.debug("Get Value: %s", round(x, 4))
             self._attr_native_value = x
@@ -478,6 +484,8 @@ class WAGO_MID_Freq(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfFrequency.HERTZ
     _attr_device_class = SensorDeviceClass.FREQUENCY
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 2
 
     def __init__(self, meter, entry_id: str, device_info: DeviceInfo) -> None:
         """Initialize an WAGO MID frequency sensor."""
@@ -521,6 +529,8 @@ class WAGO_MID_Energy_Consumed(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
     _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
@@ -568,6 +578,8 @@ class WAGO_MID_Energy_Delivered(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
     _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
@@ -613,8 +625,9 @@ class WAGO_MID_ReactiveEnergy_Consumed(SensorEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "reactive_energy_consumed"
     _attr_native_unit_of_measurement = "kvarh"
-    _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
@@ -662,8 +675,9 @@ class WAGO_MID_ReactiveEnergy_Delivered(SensorEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "reactive_energy_delivered"
     _attr_native_unit_of_measurement = "kvarh"
-    _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
@@ -714,6 +728,8 @@ class WAGO_2857_ReactivePower(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfReactivePower.VOLT_AMPERE_REACTIVE
     _attr_device_class = SensorDeviceClass.REACTIVE_POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self, meter, number: int, entry_id: str, device_info: DeviceInfo
@@ -773,6 +789,8 @@ class WAGO_2857_ApparentPower(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfApparentPower.VOLT_AMPERE
     _attr_device_class = SensorDeviceClass.APPARENT_POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self, meter, number: int, entry_id: str, device_info: DeviceInfo
@@ -831,6 +849,8 @@ class WAGO_2857_PowerFactor(SensorEntity):
     _attr_translation_key = "power_factor"
     _attr_device_class = SensorDeviceClass.POWER_FACTOR
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, meter, number: int, entry_id: str, device_info: DeviceInfo
@@ -888,6 +908,8 @@ class WAGO_Generic_Power_Total(SensorEntity):
     _attr_device_class = SensorDeviceClass.POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfPower.WATT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self,
@@ -928,6 +950,8 @@ class WAGO_Generic_Reactive_Power_Total(SensorEntity):
     _attr_device_class = SensorDeviceClass.REACTIVE_POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfReactivePower.VOLT_AMPERE_REACTIVE
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self,
@@ -968,6 +992,8 @@ class WAGO_Generic_Apparent_Power_Total(SensorEntity):
     _attr_device_class = SensorDeviceClass.APPARENT_POWER
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfApparentPower.VOLT_AMPERE
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 1
 
     def __init__(
         self,
@@ -1007,6 +1033,8 @@ class WAGO_Generic_Power_Factor_Total(SensorEntity):
     _attr_translation_key = "power_factor_total"
     _attr_device_class = SensorDeviceClass.POWER_FACTOR
     _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_should_poll = True
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self,
@@ -1043,8 +1071,8 @@ class WAGO_MID_Generic_Energy(SensorEntity):
     """Generic energy sensor for MID meter with flexible configuration."""
 
     _attr_has_entity_name = True
-    _attr_device_class = SensorDeviceClass.ENERGY
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_should_poll = True
 
     def __init__(
         self,
@@ -1064,6 +1092,9 @@ class WAGO_MID_Generic_Energy(SensorEntity):
         self._attr_native_unit_of_measurement = unit
         self._getter_method = getter_method
         self._attr_available = True
+        # Only set device_class for standard energy units (not for kvarh)
+        if unit != "kvarh":
+            self._attr_device_class = SensorDeviceClass.ENERGY
 
     def update(self) -> None:
         """Fetch new state data for the sensor."""
