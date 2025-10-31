@@ -1,0 +1,51 @@
+{
+  "entity": {
+    "sensor": {
+      "voltage": {
+        "default": "mdi:lightning-bolt"
+      },
+      "current": {
+        "default": "mdi:current-ac"
+      },
+      "power": {
+        "default": "mdi:flash"
+      },
+      "frequency": {
+        "default": "mdi:sine-wave"
+      },
+      "energy_consumed": {
+        "default": "mdi:transmission-tower-import"
+      },
+      "energy_delivered": {
+        "default": "mdi:transmission-tower-export"
+      },
+      "reactive_energy_consumed": {
+        "default": "mdi:transmission-tower-import"
+      },
+      "reactive_energy_delivered": {
+        "default": "mdi:transmission-tower-export"
+      },
+      "reactive_power": {
+        "default": "mdi:flash-triangle"
+      },
+      "apparent_power": {
+        "default": "mdi:flash-alert"
+      },
+      "power_factor": {
+        "default": "mdi:percent"
+      },
+      "power_total": {
+        "default": "mdi:flash"
+      },
+      "reactive_power_total": {
+        "default": "mdi:flash-triangle"
+      },
+      "apparent_power_total": {
+        "default": "mdi:flash-alert"
+      },
+      "power_factor_total": {
+        "default": "mdi:percent"
+      }
+    }
+  }
+}
