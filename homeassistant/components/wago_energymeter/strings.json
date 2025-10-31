@@ -1,0 +1,196 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure WAGO Energy Meter",
+        "description": "Set up your WAGO Energy Meter to integrate with Home Assistant.",
+        "data": {
+          "name": "Name",
+          "host": "IP address",
+          "port": "Port",
+          "device_type": "Device type",
+          "baudrate": "Baudrate",
+          "parity": "Parity",
+          "modbus_timeout": "Modbus timeout (seconds)"
+        },
+        "data_description": {
+          "name": "Friendly name for this device",
+          "host": "IP address or hostname of the WAGO device",
+          "port": "Modbus TCP port (default: 502)",
+          "device_type": "Select the type of WAGO device you want to connect",
+          "baudrate": "Modbus RTU baudrate (default: 19200)",
+          "parity": "Modbus RTU parity setting (default: Even)",
+          "modbus_timeout": "Timeout for Modbus communication in seconds (1-30)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate WAGO Energy Meter",
+        "description": "The connection to {name} has failed. Please update the connection details.",
+        "data": {
+          "host": "IP address",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the WAGO device",
+          "port": "Modbus TCP port (default: 502)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure WAGO Energy Meter",
+        "description": "Update the connection details for {name}.",
+        "data": {
+          "host": "IP address",
+          "port": "Port",
+          "device_type": "Device type",
+          "baudrate": "Baudrate",
+          "parity": "Parity",
+          "modbus_timeout": "Modbus timeout (seconds)"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the WAGO device",
+          "port": "Modbus TCP port (default: 502)",
+          "device_type": "Select the type of WAGO device you want to connect",
+          "baudrate": "Modbus RTU baudrate (default: 19200)",
+          "parity": "Modbus RTU parity setting (default: Even)",
+          "modbus_timeout": "Timeout for Modbus communication in seconds (1-30)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the device. Please check the IP address and port.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "Device is already configured.",
+      "reauth_successful": "Reauthentication was successful.",
+      "reconfigure_successful": "Reconfiguration was successful.",
+      "not_supported": "Additional sensors are only available for MID meter devices."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Additional sensors for {name}",
+        "description": "Select additional energy sensors to add to your MID meter device. These sensors provide detailed phase-specific, tariff-based, and power measurements.",
+        "data": {
+          "additional_sensors": "Additional sensors"
+        },
+        "data_description": {
+          "additional_sensors": "Choose which additional sensors you want to enable for this device"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "voltage": {
+        "name": "Voltage L{phase}"
+      },
+      "current": {
+        "name": "Current L{phase}"
+      },
+      "power": {
+        "name": "Power L{phase}"
+      },
+      "frequency": {
+        "name": "Frequency"
+      },
+      "reactive_power": {
+        "name": "Reactive power L{phase}"
+      },
+      "apparent_power": {
+        "name": "Apparent power L{phase}"
+      },
+      "power_factor": {
+        "name": "Power factor L{phase}"
+      },
+      "energy_consumed": {
+        "name": "Active energy consumed"
+      },
+      "energy_delivered": {
+        "name": "Active energy delivered"
+      },
+      "reactive_energy_consumed": {
+        "name": "Reactive energy consumed"
+      },
+      "reactive_energy_delivered": {
+        "name": "Reactive energy delivered"
+      },
+      "power_total": {
+        "name": "Total active power"
+      },
+      "reactive_power_total": {
+        "name": "Total reactive power"
+      },
+      "apparent_power_total": {
+        "name": "Total apparent power"
+      },
+      "power_factor_total": {
+        "name": "Total power factor"
+      },
+      "energy_consumed_l1": {
+        "name": "Active energy consumed L1"
+      },
+      "energy_consumed_l2": {
+        "name": "Active energy consumed L2"
+      },
+      "energy_consumed_l3": {
+        "name": "Active energy consumed L3"
+      },
+      "energy_delivered_l1": {
+        "name": "Active energy delivered L1"
+      },
+      "energy_delivered_l2": {
+        "name": "Active energy delivered L2"
+      },
+      "energy_delivered_l3": {
+        "name": "Active energy delivered L3"
+      },
+      "reactive_energy_consumed_l1": {
+        "name": "Reactive energy consumed L1"
+      },
+      "reactive_energy_consumed_l2": {
+        "name": "Reactive energy consumed L2"
+      },
+      "reactive_energy_consumed_l3": {
+        "name": "Reactive energy consumed L3"
+      },
+      "reactive_energy_delivered_l1": {
+        "name": "Reactive energy delivered L1"
+      },
+      "reactive_energy_delivered_l2": {
+        "name": "Reactive energy delivered L2"
+      },
+      "reactive_energy_delivered_l3": {
+        "name": "Reactive energy delivered L3"
+      },
+      "energy_consumed_t1": {
+        "name": "Active energy consumed tariff 1"
+      },
+      "energy_consumed_t2": {
+        "name": "Active energy consumed tariff 2"
+      },
+      "energy_delivered_t1": {
+        "name": "Active energy delivered tariff 1"
+      },
+      "energy_delivered_t2": {
+        "name": "Active energy delivered tariff 2"
+      },
+      "reactive_energy_consumed_t1": {
+        "name": "Reactive energy consumed tariff 1"
+      },
+      "reactive_energy_consumed_t2": {
+        "name": "Reactive energy consumed tariff 2"
+      },
+      "reactive_energy_delivered_t1": {
+        "name": "Reactive energy delivered tariff 1"
+      },
+      "reactive_energy_delivered_t2": {
+        "name": "Reactive energy delivered tariff 2"
+      },
+      "reactive_energy_total": {
+        "name": "Total reactive energy"
+      }
+    }
+  }
+}

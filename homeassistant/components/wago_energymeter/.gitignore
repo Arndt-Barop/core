@@ -1,0 +1,16 @@
+# Development workspace files
+*.code-workspace
+
+# Development documentation (not for Core repository)
+DOCUMENTATION.md
+README.md
+
+# Datasheets and vendor documentation (already covered by global .gitignore)
+Datasheets/
+
+# Python cache (already covered by global .gitignore)
+__pycache__/
+
+# Test outputs and local development
+*.log
+.pytest_cache/
