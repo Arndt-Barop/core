@@ -1,0 +1,5 @@
+{
+  "domain": "wago",
+  "name": "WAGO",
+  "integrations": ["wago_energymeter"]
+}
