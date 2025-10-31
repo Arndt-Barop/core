@@ -1,0 +1,59 @@
+# serializer version: 1
+# name: test_diagnostics_2857_570
+  dict({
+    'current_readings': dict({
+      'current_l1': 'unavailable',
+      'current_l2': 'unavailable',
+      'current_l3': 'unavailable',
+      'frequency': 50.05,
+      'power_l1': 'unavailable',
+      'power_l2': 'unavailable',
+      'power_l3': 'unavailable',
+      'voltage_l1': 'unavailable',
+      'voltage_l2': 'unavailable',
+      'voltage_l3': 'unavailable',
+    }),
+    'device_info': dict({
+      'name': 'Test 2857-570',
+      'port': 502,
+    }),
+    'entry': dict({
+      'data': dict({
+        'device_type': '2857_570',
+        'host': '**REDACTED**',
+        'name': 'Test 2857-570',
+        'port': 502,
+      }),
+      'title': 'WAGO 2857-570',
+    }),
+  })
+# ---
+# name: test_diagnostics_mid_meter
+  dict({
+    'current_readings': dict({
+      'current_l1': 'unavailable',
+      'current_l2': 'unavailable',
+      'current_l3': 'unavailable',
+      'frequency': 'unavailable',
+      'power_l1': 'unavailable',
+      'power_l2': 'unavailable',
+      'power_l3': 'unavailable',
+      'voltage_l1': 'unavailable',
+      'voltage_l2': 'unavailable',
+      'voltage_l3': 'unavailable',
+    }),
+    'device_info': dict({
+      'name': 'Test MID Meter',
+      'port': 502,
+    }),
+    'entry': dict({
+      'data': dict({
+        'device_type': 'mid_meter',
+        'host': '**REDACTED**',
+        'name': 'Test MID Meter',
+        'port': 502,
+      }),
+      'title': 'WAGO MID Meter',
+    }),
+  })
+# ---
