@@ -7413,6 +7413,12 @@
       "config_flow": false,
       "iot_class": "local_push"
     },
+    "wago_energymeter": {
+      "name": "WAGO Energy Meter",
+      "integration_type": "device",
+      "config_flow": true,
+      "iot_class": "local_polling"
+    },
     "wake_on_lan": {
       "name": "Wake on LAN",
       "integration_type": "hub",

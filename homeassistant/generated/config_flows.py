@@ -728,6 +728,7 @@ FLOWS = {
         "volumio",
         "volvo",
         "volvooncall",
+        "wago_energymeter",
         "wake_on_lan",
         "wallbox",
         "waqi",
