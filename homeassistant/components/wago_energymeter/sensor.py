@@ -262,7 +262,7 @@ async def async_setup_entry(
                 selected_sensors,
             )
             # Mapping of sensor IDs to sensor classes for 2857-570
-            sensor_mapping: dict[str, type[SensorEntity]] = {
+            sensor_mapping = {
                 "power_total": WAGO_Generic_Power_Total,
                 "reactive_power_total": WAGO_Generic_Reactive_Power_Total,
                 "apparent_power_total": WAGO_Generic_Apparent_Power_Total,
@@ -270,8 +270,8 @@ async def async_setup_entry(
             }
 
             for sensor_id in selected_sensors:
-                sensor_class = sensor_mapping.get(sensor_id)  # type: ignore[assignment]
-                if sensor_class is not None:
+                if sensor_id in sensor_mapping:
+                    sensor_class = sensor_mapping[sensor_id]
                     entities.append(
                         sensor_class(meter_instance, entry.entry_id, device_info)
                     )
