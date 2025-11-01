@@ -312,7 +312,7 @@ class WAGO_MID_Voltage(SensorEntity):
     _attr_suggested_display_precision = 2
 
     def __init__(
-        self, meter, number: int, entry_id: str, device_info: DeviceInfo
+        self, meter: WagoMeter, number: int, entry_id: str, device_info: DeviceInfo
     ) -> None:
         """Initialize an WAGO MID."""
         self._number = number
@@ -374,7 +374,7 @@ class WAGO_MID_Current(SensorEntity):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, meter, number: int, entry_id: str, device_info: DeviceInfo
+        self, meter: WagoMeter, number: int, entry_id: str, device_info: DeviceInfo
     ) -> None:
         """Initialize an WAGO MID current sensor."""
         self._number = number
@@ -433,7 +433,7 @@ class WAGO_MID_Power(SensorEntity):
     _attr_suggested_display_precision = 1
 
     def __init__(
-        self, meter, number: int, entry_id: str, device_info: DeviceInfo
+        self, meter: WagoMeter, number: int, entry_id: str, device_info: DeviceInfo
     ) -> None:
         """Initialize an WAGO MID power sensor."""
         self._number = number
@@ -487,7 +487,9 @@ class WAGO_MID_Freq(SensorEntity):
     _attr_should_poll = True
     _attr_suggested_display_precision = 2
 
-    def __init__(self, meter, entry_id: str, device_info: DeviceInfo) -> None:
+    def __init__(
+        self, meter: WagoMeter, entry_id: str, device_info: DeviceInfo
+    ) -> None:
         """Initialize an WAGO MID frequency sensor."""
         self._meter = meter
         self._attr_unique_id = f"{entry_id}_frequency"
@@ -533,7 +535,11 @@ class WAGO_MID_Energy_Consumed(SensorEntity):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
+        self,
+        meter: WagoMeter,
+        entry_id: str,
+        device_info: DeviceInfo,
+        enabled: bool = True,
     ) -> None:
         """Initialize a WAGO MID energy consumed sensor."""
         self._meter = meter
@@ -582,7 +588,11 @@ class WAGO_MID_Energy_Delivered(SensorEntity):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
+        self,
+        meter: WagoMeter,
+        entry_id: str,
+        device_info: DeviceInfo,
+        enabled: bool = True,
     ) -> None:
         """Initialize a WAGO MID energy delivered sensor."""
         self._meter = meter
@@ -630,7 +640,11 @@ class WAGO_MID_ReactiveEnergy_Consumed(SensorEntity):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
+        self,
+        meter: WagoMeter,
+        entry_id: str,
+        device_info: DeviceInfo,
+        enabled: bool = True,
     ) -> None:
         """Initialize a WAGO MID reactive energy consumed sensor."""
         self._meter = meter
@@ -680,7 +694,11 @@ class WAGO_MID_ReactiveEnergy_Delivered(SensorEntity):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, meter, entry_id: str, device_info: DeviceInfo, enabled: bool = True
+        self,
+        meter: WagoMeter,
+        entry_id: str,
+        device_info: DeviceInfo,
+        enabled: bool = True,
     ) -> None:
         """Initialize a WAGO MID reactive energy delivered sensor."""
         self._meter = meter
@@ -732,7 +750,7 @@ class WAGO_2857_ReactivePower(SensorEntity):
     _attr_suggested_display_precision = 1
 
     def __init__(
-        self, meter, number: int, entry_id: str, device_info: DeviceInfo
+        self, meter: WagoMeter, number: int, entry_id: str, device_info: DeviceInfo
     ) -> None:
         """Initialize a WAGO 2857-570 reactive power sensor."""
         self._number = number
@@ -793,7 +811,7 @@ class WAGO_2857_ApparentPower(SensorEntity):
     _attr_suggested_display_precision = 1
 
     def __init__(
-        self, meter, number: int, entry_id: str, device_info: DeviceInfo
+        self, meter: WagoMeter, number: int, entry_id: str, device_info: DeviceInfo
     ) -> None:
         """Initialize a WAGO 2857-570 apparent power sensor."""
         self._number = number
@@ -853,7 +871,7 @@ class WAGO_2857_PowerFactor(SensorEntity):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, meter, number: int, entry_id: str, device_info: DeviceInfo
+        self, meter: WagoMeter, number: int, entry_id: str, device_info: DeviceInfo
     ) -> None:
         """Initialize a WAGO 2857-570 power factor sensor."""
         self._number = number

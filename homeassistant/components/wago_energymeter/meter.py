@@ -337,7 +337,7 @@ class WagoMeter:
     def _bytes_to_float(high_word: int, low_word: int) -> float:
         """Convert two 16-bit words to a float."""
         value = (high_word << 16) + low_word
-        return struct.unpack("!f", struct.pack("!I", value))[0]
+        return cast(float, struct.unpack("!f", struct.pack("!I", value))[0])
 
     def print_values(self) -> None:
         """Print current values for debugging."""
