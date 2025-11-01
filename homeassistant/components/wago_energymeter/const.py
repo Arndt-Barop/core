@@ -7,8 +7,6 @@ DOMAIN: Final = "wago_energymeter"
 # Configuration constants
 DEFAULT_PORT = 502
 DEFAULT_MODBUS_TIMEOUT = 5
-DEFAULT_BAUDRATE = 19200
-DEFAULT_PARITY = "even"
 
 # Polling intervals (device-specific)
 # MID Meter: Energy metering with cumulative counters - slower updates sufficient
@@ -18,8 +16,6 @@ SCAN_INTERVAL_2857_570 = 5
 
 # Modbus settings
 CONF_DEVICE_TYPE = "device_type"
-CONF_BAUDRATE = "baudrate"
-CONF_PARITY = "parity"
 CONF_MODBUS_TIMEOUT = "modbus_timeout"
 
 # Device types
@@ -29,16 +25,6 @@ DEVICE_TYPE_2857_570 = "2857_570"
 DEVICE_TYPES = {
     DEVICE_TYPE_MID_METER: "MID Meter (879-3000 series)",
     DEVICE_TYPE_2857_570: "3-Phase Power Measurement (2857-570/024-001)",
-}
-
-# Baudrate options
-BAUDRATE_OPTIONS = [9600, 19200, 38400, 57600, 115200]
-
-# Parity options
-PARITY_OPTIONS = {
-    "none": "None",
-    "even": "Even",
-    "odd": "Odd",
 }
 
 # Options flow
