@@ -19,21 +19,15 @@ from . import WAGOEnergyMeterConfigEntry
 from .const import (
     AVAILABLE_2857_SENSORS,
     AVAILABLE_MID_SENSORS,
-    BAUDRATE_OPTIONS,
     CONF_ADDITIONAL_SENSORS,
-    CONF_BAUDRATE,
     CONF_DEVICE_TYPE,
     CONF_MODBUS_TIMEOUT,
-    CONF_PARITY,
-    DEFAULT_BAUDRATE,
     DEFAULT_MODBUS_TIMEOUT,
-    DEFAULT_PARITY,
     DEFAULT_PORT,
     DEVICE_TYPE_2857_570,
     DEVICE_TYPE_MID_METER,
     DEVICE_TYPES,
     DOMAIN,
-    PARITY_OPTIONS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -128,10 +122,6 @@ class WAGOEnergyMeterConfigFlow(ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            # Convert baudrate from string to int if needed
-            if isinstance(user_input.get(CONF_BAUDRATE), str):
-                user_input[CONF_BAUDRATE] = int(user_input[CONF_BAUDRATE])
-
             # Check if device is already configured
             self._async_abort_entries_match(
                 {CONF_HOST: user_input[CONF_HOST], CONF_PORT: user_input[CONF_PORT]}
@@ -162,30 +152,6 @@ class WAGOEnergyMeterConfigFlow(ConfigFlow, domain=DOMAIN):
                             options=[
                                 selector.SelectOptionDict(value=k, label=v)
                                 for k, v in DEVICE_TYPES.items()
-                            ],
-                            mode=selector.SelectSelectorMode.DROPDOWN,
-                        )
-                    ),
-                    vol.Required(
-                        CONF_BAUDRATE, default=str(DEFAULT_BAUDRATE)
-                    ): selector.SelectSelector(
-                        selector.SelectSelectorConfig(
-                            options=[
-                                selector.SelectOptionDict(
-                                    value=str(baudrate), label=str(baudrate)
-                                )
-                                for baudrate in BAUDRATE_OPTIONS
-                            ],
-                            mode=selector.SelectSelectorMode.DROPDOWN,
-                        )
-                    ),
-                    vol.Required(
-                        CONF_PARITY, default=DEFAULT_PARITY
-                    ): selector.SelectSelector(
-                        selector.SelectSelectorConfig(
-                            options=[
-                                selector.SelectOptionDict(value=k, label=v)
-                                for k, v in PARITY_OPTIONS.items()
                             ],
                             mode=selector.SelectSelectorMode.DROPDOWN,
                         )
@@ -263,10 +229,6 @@ class WAGOEnergyMeterConfigFlow(ConfigFlow, domain=DOMAIN):
         reconfigure_entry = self._get_reconfigure_entry()
 
         if user_input is not None:
-            # Convert baudrate from string to int if needed
-            if isinstance(user_input.get(CONF_BAUDRATE), str):
-                user_input[CONF_BAUDRATE] = int(user_input[CONF_BAUDRATE])
-
             # Test connection with new configuration
             test_data = {
                 CONF_NAME: reconfigure_entry.data[CONF_NAME],
@@ -288,8 +250,6 @@ class WAGOEnergyMeterConfigFlow(ConfigFlow, domain=DOMAIN):
                         CONF_HOST: user_input[CONF_HOST],
                         CONF_PORT: user_input[CONF_PORT],
                         CONF_DEVICE_TYPE: user_input[CONF_DEVICE_TYPE],
-                        CONF_BAUDRATE: user_input[CONF_BAUDRATE],
-                        CONF_PARITY: user_input[CONF_PARITY],
                         CONF_MODBUS_TIMEOUT: user_input[CONF_MODBUS_TIMEOUT],
                     },
                 )
@@ -314,34 +274,6 @@ class WAGOEnergyMeterConfigFlow(ConfigFlow, domain=DOMAIN):
                             options=[
                                 selector.SelectOptionDict(value=k, label=v)
                                 for k, v in DEVICE_TYPES.items()
-                            ],
-                            mode=selector.SelectSelectorMode.DROPDOWN,
-                        )
-                    ),
-                    vol.Required(
-                        CONF_BAUDRATE,
-                        default=str(
-                            reconfigure_entry.data.get(CONF_BAUDRATE, DEFAULT_BAUDRATE)
-                        ),
-                    ): selector.SelectSelector(
-                        selector.SelectSelectorConfig(
-                            options=[
-                                selector.SelectOptionDict(
-                                    value=str(baudrate), label=str(baudrate)
-                                )
-                                for baudrate in BAUDRATE_OPTIONS
-                            ],
-                            mode=selector.SelectSelectorMode.DROPDOWN,
-                        )
-                    ),
-                    vol.Required(
-                        CONF_PARITY,
-                        default=reconfigure_entry.data.get(CONF_PARITY, DEFAULT_PARITY),
-                    ): selector.SelectSelector(
-                        selector.SelectSelectorConfig(
-                            options=[
-                                selector.SelectOptionDict(value=k, label=v)
-                                for k, v in PARITY_OPTIONS.items()
                             ],
                             mode=selector.SelectSelectorMode.DROPDOWN,
                         )
