@@ -79,6 +79,9 @@
           "additional_sensors": "Choose which additional sensors you want to enable for this device"
         }
       }
+    },
+    "abort": {
+      "not_supported": "Additional sensors are only available for MID meter and 2857-570 devices."
     }
   },
   "entity": {
