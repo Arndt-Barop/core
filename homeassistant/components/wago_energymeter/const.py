@@ -6,10 +6,15 @@ DOMAIN: Final = "wago_energymeter"
 
 # Configuration constants
 DEFAULT_PORT = 502
-DEFAULT_SCAN_INTERVAL = 5
 DEFAULT_MODBUS_TIMEOUT = 5
 DEFAULT_BAUDRATE = 19200
 DEFAULT_PARITY = "even"
+
+# Polling intervals (device-specific)
+# MID Meter: Energy metering with cumulative counters - slower updates sufficient
+SCAN_INTERVAL_MID_METER = 15
+# 2857-570: Real-time power measurement - faster updates for responsive monitoring
+SCAN_INTERVAL_2857_570 = 5
 
 # Modbus settings
 CONF_DEVICE_TYPE = "device_type"

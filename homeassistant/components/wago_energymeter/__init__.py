@@ -17,9 +17,11 @@ from .const import (
     DEFAULT_BAUDRATE,
     DEFAULT_MODBUS_TIMEOUT,
     DEFAULT_PARITY,
-    DEFAULT_SCAN_INTERVAL,
+    DEVICE_TYPE_2857_570,
     DEVICE_TYPE_MID_METER,
     DOMAIN,
+    SCAN_INTERVAL_2857_570,
+    SCAN_INTERVAL_MID_METER,
 )
 from .meter import WagoMeter
 
@@ -43,10 +45,20 @@ async def async_setup_entry(
     baudrate = entry.data.get(CONF_BAUDRATE, DEFAULT_BAUDRATE)
     parity = entry.data.get(CONF_PARITY, DEFAULT_PARITY)
 
+    # Determine polling interval based on device type
+    # MID Meter: Energy metering (15s) - slower updates for cumulative energy counters
+    # 2857-570: Power measurement (5s) - faster updates for real-time power monitoring
+    scan_interval = (
+        SCAN_INTERVAL_2857_570
+        if device_type == DEVICE_TYPE_2857_570
+        else SCAN_INTERVAL_MID_METER
+    )
+
     _LOGGER.info(
-        "Setting up WAGO Energy Meter: %s (Device Type: %s, Baudrate: %s, Parity: %s, Timeout: %s)",
+        "Setting up WAGO Energy Meter: %s (Device Type: %s, Interval: %ss, Baudrate: %s, Parity: %s, Timeout: %s)",
         entry.data[CONF_HOST],
         device_type,
+        scan_interval,
         baudrate,
         parity,
         modbus_timeout,
@@ -57,7 +69,7 @@ async def async_setup_entry(
         return WagoMeter(
             ip=entry.data[CONF_HOST],
             port=entry.data[CONF_PORT],
-            interval=DEFAULT_SCAN_INTERVAL,
+            interval=scan_interval,
             timeout=modbus_timeout,
             device_type=device_type,
         )
