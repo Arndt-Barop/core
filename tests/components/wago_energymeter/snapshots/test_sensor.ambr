@@ -24,7 +24,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.APPARENT_POWER: 'apparent_power'>,
@@ -80,7 +80,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.APPARENT_POWER: 'apparent_power'>,
@@ -136,7 +136,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.APPARENT_POWER: 'apparent_power'>,
@@ -192,7 +192,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.CURRENT: 'current'>,
@@ -248,7 +248,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.CURRENT: 'current'>,
@@ -304,7 +304,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.CURRENT: 'current'>,
@@ -360,7 +360,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.FREQUENCY: 'frequency'>,
@@ -415,6 +415,9 @@
     }),
     'name': None,
     'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
     }),
     'original_device_class': <SensorDeviceClass.POWER_FACTOR: 'power_factor'>,
     'original_icon': None,
@@ -467,6 +470,9 @@
     }),
     'name': None,
     'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
     }),
     'original_device_class': <SensorDeviceClass.POWER_FACTOR: 'power_factor'>,
     'original_icon': None,
@@ -519,6 +525,9 @@
     }),
     'name': None,
     'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
     }),
     'original_device_class': <SensorDeviceClass.POWER_FACTOR: 'power_factor'>,
     'original_icon': None,
@@ -572,7 +581,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.POWER: 'power'>,
@@ -628,7 +637,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.POWER: 'power'>,
@@ -684,7 +693,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.POWER: 'power'>,
@@ -740,7 +749,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.REACTIVE_POWER: 'reactive_power'>,
@@ -796,7 +805,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.REACTIVE_POWER: 'reactive_power'>,
@@ -852,7 +861,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.REACTIVE_POWER: 'reactive_power'>,
@@ -908,7 +917,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.VOLTAGE: 'voltage'>,
@@ -964,7 +973,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.VOLTAGE: 'voltage'>,
@@ -1020,7 +1029,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.VOLTAGE: 'voltage'>,
@@ -1076,7 +1085,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.ENERGY: 'energy'>,
@@ -1132,7 +1141,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.ENERGY: 'energy'>,
@@ -1188,7 +1197,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.CURRENT: 'current'>,
@@ -1244,7 +1253,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.CURRENT: 'current'>,
@@ -1300,7 +1309,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 2,
+        'suggested_display_precision': 3,
       }),
     }),
     'original_device_class': <SensorDeviceClass.CURRENT: 'current'>,
@@ -1356,7 +1365,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.FREQUENCY: 'frequency'>,
@@ -1412,7 +1421,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.POWER: 'power'>,
@@ -1468,7 +1477,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.POWER: 'power'>,
@@ -1524,7 +1533,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 1,
       }),
     }),
     'original_device_class': <SensorDeviceClass.POWER: 'power'>,
@@ -1579,8 +1588,11 @@
     }),
     'name': None,
     'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
     }),
-    'original_device_class': <SensorDeviceClass.ENERGY: 'energy'>,
+    'original_device_class': None,
     'original_icon': None,
     'original_name': 'Reactive energy consumed',
     'platform': 'wago_energymeter',
@@ -1595,7 +1607,6 @@
 # name: test_mid_meter_sensors[sensor.test_mid_meter_reactive_energy_consumed-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'energy',
       'friendly_name': 'Test MID Meter Reactive energy consumed',
       'state_class': <SensorStateClass.TOTAL_INCREASING: 'total_increasing'>,
       'unit_of_measurement': 'kvarh',
@@ -1632,8 +1643,11 @@
     }),
     'name': None,
     'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
     }),
-    'original_device_class': <SensorDeviceClass.ENERGY: 'energy'>,
+    'original_device_class': None,
     'original_icon': None,
     'original_name': 'Reactive energy delivered',
     'platform': 'wago_energymeter',
@@ -1648,7 +1662,6 @@
 # name: test_mid_meter_sensors[sensor.test_mid_meter_reactive_energy_delivered-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
-      'device_class': 'energy',
       'friendly_name': 'Test MID Meter Reactive energy delivered',
       'state_class': <SensorStateClass.TOTAL_INCREASING: 'total_increasing'>,
       'unit_of_measurement': 'kvarh',
@@ -1686,7 +1699,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.VOLTAGE: 'voltage'>,
@@ -1742,7 +1755,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.VOLTAGE: 'voltage'>,
@@ -1798,7 +1811,7 @@
     'name': None,
     'options': dict({
       'sensor': dict({
-        'suggested_display_precision': 0,
+        'suggested_display_precision': 2,
       }),
     }),
     'original_device_class': <SensorDeviceClass.VOLTAGE: 'voltage'>,

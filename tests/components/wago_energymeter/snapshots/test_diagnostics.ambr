@@ -2,16 +2,16 @@
 # name: test_diagnostics_2857_570
   dict({
     'current_readings': dict({
-      'current_l1': 'unavailable',
-      'current_l2': 'unavailable',
-      'current_l3': 'unavailable',
+      'current_l1': 10.5,
+      'current_l2': 10.2,
+      'current_l3': 10.8,
       'frequency': 50.05,
-      'power_l1': 'unavailable',
-      'power_l2': 'unavailable',
-      'power_l3': 'unavailable',
-      'voltage_l1': 'unavailable',
-      'voltage_l2': 'unavailable',
-      'voltage_l3': 'unavailable',
+      'power_l1': 2417.1,
+      'power_l2': 2347.0,
+      'power_l3': 2487.2,
+      'voltage_l1': 230.2,
+      'voltage_l2': 230.1,
+      'voltage_l3': 230.3,
     }),
     'device_info': dict({
       'name': 'Test 2857-570',
@@ -31,16 +31,16 @@
 # name: test_diagnostics_mid_meter
   dict({
     'current_readings': dict({
-      'current_l1': 'unavailable',
-      'current_l2': 'unavailable',
-      'current_l3': 'unavailable',
-      'frequency': 'unavailable',
-      'power_l1': 'unavailable',
-      'power_l2': 'unavailable',
-      'power_l3': 'unavailable',
-      'voltage_l1': 'unavailable',
-      'voltage_l2': 'unavailable',
-      'voltage_l3': 'unavailable',
+      'current_l1': 5.2,
+      'current_l2': 4.8,
+      'current_l3': 5.1,
+      'frequency': 50.0,
+      'power_l1': 1196.0,
+      'power_l2': 1104.0,
+      'power_l3': 1173.0,
+      'voltage_l1': 230.0,
+      'voltage_l2': 230.5,
+      'voltage_l3': 229.8,
     }),
     'device_info': dict({
       'name': 'Test MID Meter',

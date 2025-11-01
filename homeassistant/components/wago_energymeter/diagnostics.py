@@ -38,7 +38,7 @@ async def async_get_config_entry_diagnostics(
         # Voltage readings
         for phase in range(1, 4):
             try:
-                voltage_fun = getattr(meter, f"getUL{phase}")
+                voltage_fun = getattr(meter, f"get_voltage_l{phase}")
                 meter_data[f"voltage_l{phase}"] = voltage_fun()
             except (OSError, AttributeError):
                 meter_data[f"voltage_l{phase}"] = "unavailable"
@@ -46,7 +46,7 @@ async def async_get_config_entry_diagnostics(
         # Current readings
         for phase in range(1, 4):
             try:
-                current_fun = getattr(meter, f"getIL{phase}")
+                current_fun = getattr(meter, f"get_current_l{phase}")
                 meter_data[f"current_l{phase}"] = current_fun()
             except (OSError, AttributeError):
                 meter_data[f"current_l{phase}"] = "unavailable"
@@ -54,7 +54,7 @@ async def async_get_config_entry_diagnostics(
         # Power readings
         for phase in range(1, 4):
             try:
-                power_fun = getattr(meter, f"getPL{phase}")
+                power_fun = getattr(meter, f"get_power_l{phase}")
                 meter_data[f"power_l{phase}"] = power_fun()
             except (OSError, AttributeError):
                 meter_data[f"power_l{phase}"] = "unavailable"

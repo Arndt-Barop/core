@@ -115,6 +115,9 @@ def mock_wago_meter_mid(mock_modbus_client) -> Generator[MagicMock]:
         meter.get_reactive_power_l3.return_value = 105.0
         meter.get_reactive_power_total.return_value = 300.0
 
+        # Mock MID meter sensor getters - frequency
+        meter.get_frequency.return_value = 50.0
+
         # Mock MID meter sensor getters - energy
         meter.get_energy_consumed.return_value = 3689.5
         meter.get_energy_delivered.return_value = 38.0
