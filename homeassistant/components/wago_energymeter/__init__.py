@@ -10,13 +10,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import (
-    CONF_BAUDRATE,
     CONF_DEVICE_TYPE,
     CONF_MODBUS_TIMEOUT,
-    CONF_PARITY,
-    DEFAULT_BAUDRATE,
     DEFAULT_MODBUS_TIMEOUT,
-    DEFAULT_PARITY,
     DEVICE_TYPE_2857_570,
     DEVICE_TYPE_MID_METER,
     DOMAIN,
@@ -42,8 +38,6 @@ async def async_setup_entry(
     # Get configuration with defaults for backwards compatibility
     device_type = entry.data.get(CONF_DEVICE_TYPE, DEVICE_TYPE_MID_METER)
     modbus_timeout = entry.data.get(CONF_MODBUS_TIMEOUT, DEFAULT_MODBUS_TIMEOUT)
-    baudrate = entry.data.get(CONF_BAUDRATE, DEFAULT_BAUDRATE)
-    parity = entry.data.get(CONF_PARITY, DEFAULT_PARITY)
 
     # Determine polling interval based on device type
     # MID Meter: Energy metering (15s) - slower updates for cumulative energy counters
@@ -55,12 +49,10 @@ async def async_setup_entry(
     )
 
     _LOGGER.info(
-        "Setting up WAGO Energy Meter: %s (Device Type: %s, Interval: %ss, Baudrate: %s, Parity: %s, Timeout: %s)",
+        "Setting up WAGO Energy Meter: %s (Device Type: %s, Interval: %ss, Timeout: %ss)",
         entry.data[CONF_HOST],
         device_type,
         scan_interval,
-        baudrate,
-        parity,
         modbus_timeout,
     )
 
