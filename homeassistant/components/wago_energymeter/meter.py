@@ -98,10 +98,10 @@ class WagoMeter:
 
         # Device-specific values
         if self._device_type == "mid_meter":
-            self._P_Imp = 0.0  # Active energy import (Wirkenergie Bezug)
-            self._P_Exp = 0.0  # Active energy export (Wirkenergie Lieferung)
-            self._Q_Imp = 0.0  # Reactive energy import (Blindenergie Bezug)
-            self._Q_Exp = 0.0  # Reactive energy export (Blindenergie Lieferung)
+            self._P_Imp = 0.0  # Active energy import
+            self._P_Exp = 0.0  # Active energy export
+            self._Q_Imp = 0.0  # Reactive energy import
+            self._Q_Exp = 0.0  # Reactive energy export
             # Phase-specific energy values
             self._P_Imp_L1 = 0.0  # Active energy consumed L1
             self._P_Imp_L2 = 0.0  # Active energy consumed L2
@@ -149,7 +149,7 @@ class WagoMeter:
             elif self._device_type == "2857_570":
                 self._read_2857_570()
 
-            _LOGGER.debug("Messung completed")
+            _LOGGER.debug("Measurement completed")
             time.sleep(self._interval)
         _LOGGER.debug("Thread stopped")
 
@@ -306,7 +306,7 @@ class WagoMeter:
             self._Q_L3 = self._bytes_to_float(result[42], result[43])
             self._Q_Tot = self._bytes_to_float(result[44], result[45])
 
-            # Apparent power (Scheinleistung)
+            # Apparent power
             self._S_L1 = self._bytes_to_float(result[46], result[47])
             self._S_L2 = self._bytes_to_float(result[48], result[49])
             # Note: We only read 50 registers, need more for S_L3, S_Tot, PF values
@@ -324,7 +324,7 @@ class WagoMeter:
             self._S_L3 = self._bytes_to_float(result[0], result[1])
             self._S_Tot = self._bytes_to_float(result[2], result[3])
 
-            # Power factors (Leistungsfaktor cos φ)
+            # Power factors (cos φ)
             self._PF_L1 = self._bytes_to_float(result[4], result[5])
             self._PF_L2 = self._bytes_to_float(result[6], result[7])
             self._PF_L3 = self._bytes_to_float(result[8], result[9])

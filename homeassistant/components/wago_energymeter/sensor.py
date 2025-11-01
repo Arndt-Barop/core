@@ -630,7 +630,7 @@ class WAGO_MID_Energy_Delivered(SensorEntity):
 
 
 class WAGO_MID_ReactiveEnergy_Consumed(SensorEntity):
-    """WAGO MID Energy Meter Total Reactive Energy Consumed (Bezug Blindenergie)."""
+    """WAGO MID Energy Meter Total Reactive Energy Consumed."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "reactive_energy_consumed"
@@ -684,7 +684,7 @@ class WAGO_MID_ReactiveEnergy_Consumed(SensorEntity):
 
 
 class WAGO_MID_ReactiveEnergy_Delivered(SensorEntity):
-    """WAGO MID Energy Meter Total Reactive Energy Delivered (Lieferung Blindenergie)."""
+    """WAGO MID Energy Meter Total Reactive Energy Delivered."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "reactive_energy_delivered"
