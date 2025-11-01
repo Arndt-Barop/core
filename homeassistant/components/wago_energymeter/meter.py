@@ -160,17 +160,17 @@ class WagoMeter:
         if result:
             # Type narrowing for type checker - result is list[int], not list[int | None]
             result = cast(list[int], result)
-            # Spannung (Voltage)
+            # Voltage
             self._U_L1 = self._bytes_to_float(result[2], result[3])
             self._U_L2 = self._bytes_to_float(result[4], result[5])
             self._U_L3 = self._bytes_to_float(result[6], result[7])
-            # Strom (Current)
+            # Current
             self._I_L1 = self._bytes_to_float(result[12], result[13])
             self._I_L2 = self._bytes_to_float(result[14], result[15])
             self._I_L3 = self._bytes_to_float(result[16], result[17])
-            # Frequenz (Frequency)
+            # Frequency
             self._Freq = self._bytes_to_float(result[8], result[9])
-            # Wirkleistung (Active power)
+            # Active power
             self._P_L1 = self._bytes_to_float(result[20], result[21])
             self._P_L2 = self._bytes_to_float(result[22], result[23])
             self._P_L3 = self._bytes_to_float(result[24], result[25])
@@ -184,21 +184,21 @@ class WagoMeter:
 
         if result:
             result = cast(list[int], result)
-            # Wirkenergie Bezug (Active energy import) - Register 0x6006 = 24582
+            # Active energy import - Register 0x6006 = 24582
             self._P_Imp = self._bytes_to_float(result[12], result[13])
-            # Wirkenergie Lieferung (Active energy export) - Register 0x6010 = 24592
+            # Active energy export - Register 0x6010 = 24592
             self._P_Exp = self._bytes_to_float(result[22], result[23])
         else:
             _LOGGER.warning("Unable to read modbus registers (24576)")
 
-        # Read reactive energy values (Blindenergie) - Register 0x6030 = 24624
+        # Read reactive energy values - Register 0x6030 = 24624
         result = self._client.read_holding_registers(24624, 14)
 
         if result:
             result = cast(list[int], result)
-            # Blindenergie Bezug (Reactive energy import) - Register 0x6030
+            # Reactive energy import - Register 0x6030
             self._Q_Imp = self._bytes_to_float(result[0], result[1])
-            # Blindenergie Lieferung (Reactive energy export) - Register 0x603C = 24636
+            # Reactive energy export - Register 0x603C = 24636
             self._Q_Exp = self._bytes_to_float(result[12], result[13])
         else:
             _LOGGER.warning("Unable to read modbus registers (24624)")

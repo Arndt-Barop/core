@@ -524,7 +524,7 @@ class WAGO_MID_Freq(SensorEntity):
 
 
 class WAGO_MID_Energy_Consumed(SensorEntity):
-    """WAGO MID Energy Meter Total Active Energy Consumed (Bezug)."""
+    """WAGO MID Energy Meter Total Active Energy Consumed."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "energy_consumed"
@@ -577,7 +577,7 @@ class WAGO_MID_Energy_Consumed(SensorEntity):
 
 
 class WAGO_MID_Energy_Delivered(SensorEntity):
-    """WAGO MID Energy Meter Total Active Energy Delivered (Lieferung)."""
+    """WAGO MID Energy Meter Total Active Energy Delivered."""
 
     _attr_has_entity_name = True
     _attr_translation_key = "energy_delivered"
