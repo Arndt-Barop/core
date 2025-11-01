@@ -1,10 +1,13 @@
 """WAGO Energy Meter device communication."""
 
+from __future__ import annotations
+
 import logging
 import re
 import struct
 import threading
 import time
+from typing import cast
 
 from pyModbusTCP.client import ModbusClient
 
@@ -155,6 +158,8 @@ class WagoMeter:
         result = self._client.read_holding_registers(20480, 26)
 
         if result:
+            # Type narrowing for type checker - result is list[int], not list[int | None]
+            result = cast(list[int], result)
             # Spannung (Voltage)
             self._U_L1 = self._bytes_to_float(result[2], result[3])
             self._U_L2 = self._bytes_to_float(result[4], result[5])
@@ -178,6 +183,7 @@ class WagoMeter:
         result = self._client.read_holding_registers(24576, 24)
 
         if result:
+            result = cast(list[int], result)
             # Wirkenergie Bezug (Active energy import) - Register 0x6006 = 24582
             self._P_Imp = self._bytes_to_float(result[12], result[13])
             # Wirkenergie Lieferung (Active energy export) - Register 0x6010 = 24592
@@ -189,6 +195,7 @@ class WagoMeter:
         result = self._client.read_holding_registers(24624, 14)
 
         if result:
+            result = cast(list[int], result)
             # Blindenergie Bezug (Reactive energy import) - Register 0x6030
             self._Q_Imp = self._bytes_to_float(result[0], result[1])
             # Blindenergie Lieferung (Reactive energy export) - Register 0x603C = 24636
@@ -201,6 +208,7 @@ class WagoMeter:
         result = self._client.read_holding_registers(24578, 34)
 
         if result:
+            result = cast(list[int], result)
             # Tariff 1 active energy consumed - Register 0x6002 = 24578
             self._P_Imp_T1 = self._bytes_to_float(result[0], result[1])
             # Tariff 2 active energy consumed - Register 0x6004 = 24580
@@ -223,6 +231,7 @@ class WagoMeter:
         result = self._client.read_holding_registers(24626, 22)
 
         if result:
+            result = cast(list[int], result)
             # Tariff 1 reactive energy consumed - Register 0x6032 = 24626
             self._Q_Imp_T1 = self._bytes_to_float(result[0], result[1])
             # Tariff 2 reactive energy consumed - Register 0x6034 = 24628
@@ -253,6 +262,7 @@ class WagoMeter:
         result = self._client.read_holding_registers(24614, 10)
 
         if result:
+            result = cast(list[int], result)
             # Phase L1 reactive energy consumed - Register 0x6026 offset calculation
             # Based on pattern, consumed values are before delivered
             self._Q_Imp_L1 = self._bytes_to_float(result[0], result[1])
@@ -270,6 +280,7 @@ class WagoMeter:
         result = self._client.read_input_registers(10, 50)
 
         if result:
+            result = cast(list[int], result)
             # Extract voltage, current, frequency, power values
             # Note: Exact register mapping needs to be verified from datasheet
             # This is a placeholder implementation
@@ -309,6 +320,7 @@ class WagoMeter:
         result = self._client.read_input_registers(60, 10)
 
         if result:
+            result = cast(list[int], result)
             self._S_L3 = self._bytes_to_float(result[0], result[1])
             self._S_Tot = self._bytes_to_float(result[2], result[3])
 
