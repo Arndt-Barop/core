@@ -9,8 +9,6 @@
           "host": "IP address",
           "port": "Port",
           "device_type": "Device type",
-          "baudrate": "Baudrate",
-          "parity": "Parity",
           "modbus_timeout": "Modbus timeout (seconds)"
         },
         "data_description": {
@@ -18,8 +16,6 @@
           "host": "IP address or hostname of the WAGO device",
           "port": "Modbus TCP port (default: 502)",
           "device_type": "Select the type of WAGO device you want to connect",
-          "baudrate": "Modbus RTU baudrate (default: 19200)",
-          "parity": "Modbus RTU parity setting (default: Even)",
           "modbus_timeout": "Timeout for Modbus communication in seconds (1-30)"
         }
       },
@@ -42,16 +38,12 @@
           "host": "IP address",
           "port": "Port",
           "device_type": "Device type",
-          "baudrate": "Baudrate",
-          "parity": "Parity",
           "modbus_timeout": "Modbus timeout (seconds)"
         },
         "data_description": {
           "host": "IP address or hostname of the WAGO device",
           "port": "Modbus TCP port (default: 502)",
           "device_type": "Select the type of WAGO device you want to connect",
-          "baudrate": "Modbus RTU baudrate (default: 19200)",
-          "parity": "Modbus RTU parity setting (default: Even)",
           "modbus_timeout": "Timeout for Modbus communication in seconds (1-30)"
         }
       }
