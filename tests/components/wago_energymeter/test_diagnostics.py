@@ -154,3 +154,62 @@ async def test_diagnostics_frequency_error(
     assert result["current_readings"]["frequency"] == "unavailable"
     # But other readings should still work
     assert result["current_readings"]["voltage_l1"] == 230.0
+
+
+async def test_diagnostics_power_error(
+    hass: HomeAssistant,
+    hass_client: ClientSessionGenerator,
+    mock_config_entry_mid: MockConfigEntry,
+    mock_wago_meter_mid: MagicMock,
+) -> None:
+    """Test diagnostics when power reading fails."""
+    # Make power readings raise OSError
+    mock_wago_meter_mid.get_power_l1.side_effect = OSError("Power read failed")
+    mock_wago_meter_mid.get_power_l2.side_effect = OSError("Power read failed")
+    mock_wago_meter_mid.get_power_l3.side_effect = OSError("Power read failed")
+
+    with patch(
+        "homeassistant.components.wago_energymeter.WagoMeter",
+        return_value=mock_wago_meter_mid,
+    ):
+        mock_config_entry_mid.add_to_hass(hass)
+        await hass.config_entries.async_setup(mock_config_entry_mid.entry_id)
+        await hass.async_block_till_done()
+
+    result = await get_diagnostics_for_config_entry(
+        hass, hass_client, mock_config_entry_mid
+    )
+
+    # Power readings should be unavailable
+    assert result["current_readings"]["power_l1"] == "unavailable"
+    assert result["current_readings"]["power_l2"] == "unavailable"
+    assert result["current_readings"]["power_l3"] == "unavailable"
+    # But other readings should still work
+    assert result["current_readings"]["voltage_l1"] == 230.0
+
+
+async def test_diagnostics_complete_failure(
+    hass: HomeAssistant,
+    hass_client: ClientSessionGenerator,
+    mock_config_entry_mid: MockConfigEntry,
+    mock_wago_meter_mid: MagicMock,
+) -> None:
+    """Test diagnostics when all meter access fails."""
+    # Make all meter methods raise ValueError to trigger outer exception handler
+    mock_wago_meter_mid.get_voltage_l1.side_effect = ValueError("Complete failure")
+
+    with patch(
+        "homeassistant.components.wago_energymeter.WagoMeter",
+        return_value=mock_wago_meter_mid,
+    ):
+        mock_config_entry_mid.add_to_hass(hass)
+        await hass.config_entries.async_setup(mock_config_entry_mid.entry_id)
+        await hass.async_block_till_done()
+
+    result = await get_diagnostics_for_config_entry(
+        hass, hass_client, mock_config_entry_mid
+    )
+
+    # Should have error message
+    assert "error" in result["current_readings"]
+    assert "Failed to retrieve meter data" in result["current_readings"]["error"]
