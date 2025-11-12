@@ -39,19 +39,42 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         host=host, port=port, timeout=DEFAULT_TIMEOUT, auto_open=False
     )
 
-    def _test_connection() -> bool:
-        """Test connection in executor."""
-        if not client.open():
-            return False
-        # Try to read a register to verify connection
-        result = client.read_holding_registers(0, 1)
-        client.close()
-        return result is not None
+    def _test_connection() -> tuple[bool, str | None]:
+        """Test connection and get device MAC address in executor.
 
-    if not await hass.async_add_executor_job(_test_connection):
+        Returns tuple of (success, mac_address).
+        MAC address is read from Modbus registers 0x2010-0x2012 (3 words).
+        """
+        if not client.open():
+            return False, None
+
+        try:
+            # Read MAC address from registers 0x2010-0x2012 (6 bytes = 3 registers)
+            mac_registers = client.read_holding_registers(0x2010, 3)
+            if mac_registers is None:
+                return False, None
+
+            # Convert registers to MAC address string
+            mac_bytes: list[int] = []
+            for reg in mac_registers:
+                if reg is not None:
+                    mac_bytes.append((reg >> 8) & 0xFF)  # High byte
+                    mac_bytes.append(reg & 0xFF)  # Low byte
+            mac_address = ":".join(f"{b:02x}" for b in mac_bytes)
+
+            return True, mac_address
+        finally:
+            client.close()
+
+    success, mac_address = await hass.async_add_executor_job(_test_connection)
+
+    if not success:
         raise CannotConnect
 
-    return {"title": f"WAGO Controller ({host})"}
+    if mac_address is None:
+        raise CannotConnect
+
+    return {"title": f"WAGO Controller ({host})", "mac": mac_address}
 
 
 class CannotConnect(HomeAssistantError):
@@ -79,8 +102,10 @@ class WAGOIOSystemConfigFlow(ConfigFlow, domain=DOMAIN):
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
             else:
-                # Unique ID will be set in future commit based on device info
-                # Duplicate entry checking will be added in future commit
+                # Set unique ID based on device MAC address
+                await self.async_set_unique_id(info["mac"])
+                self._abort_if_unique_id_configured()
+
                 return self.async_create_entry(title=info["title"], data=user_input)
 
         return self.async_show_form(
