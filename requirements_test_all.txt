@@ -213,6 +213,9 @@ aiobotocore==2.21.1
 # homeassistant.components.comelit
 aiocomelit==1.1.2
 
+# homeassistant.components.develop
+aiodevelop==1.2.3
+
 # homeassistant.components.dhcp
 aiodhcpwatcher==1.2.1
 

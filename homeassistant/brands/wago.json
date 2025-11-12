@@ -1,5 +1,5 @@
 {
   "domain": "wago",
   "name": "WAGO",
-  "integrations": ["wago_energymeter"]
+  "integrations": ["wago_energymeter", "wago_io_system"]
 }
