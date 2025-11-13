@@ -1,18 +1,17 @@
-"""The WAGO I/O System integration."""
+"""Integration for WAGO I/O System."""
 
 from __future__ import annotations
 
 import logging
 from typing import TYPE_CHECKING
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PORT, Platform
+from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN as DOMAIN
+from .coordinator import WAGOIOSystemCoordinator
 
 if TYPE_CHECKING:
-    from .coordinator import WAGOIOSystemCoordinator
+    from homeassistant.config_entries import ConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,28 +24,22 @@ PLATFORMS: list[Platform] = [
 type WAGOIOSystemConfigEntry = ConfigEntry[WAGOIOSystemCoordinator]
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, entry: WAGOIOSystemConfigEntry
-) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: WAGOIOSystemConfigEntry) -> bool:
     """Set up WAGO I/O System from a config entry."""
-    _LOGGER.debug(
-        "Setting up WAGO I/O System integration for %s:%s",
-        entry.data[CONF_HOST],
-        entry.data[CONF_PORT],
-    )
+    _LOGGER.debug("Setting up WAGO I/O System integration for %s", entry.data[CONF_HOST])
 
-    # Coordinator and module detection will be implemented in next commits
-    # coordinator = WAGOIOSystemCoordinator(hass, entry)
-    # await coordinator.async_config_entry_first_refresh()
-    # entry.runtime_data = coordinator
+    coordinator = WAGOIOSystemCoordinator(hass, entry)
+    await coordinator.async_config_entry_first_refresh()
 
-    # await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    entry.runtime_data = coordinator
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 
 
-async def async_unload_entry(
-    hass: HomeAssistant, entry: WAGOIOSystemConfigEntry
-) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: WAGOIOSystemConfigEntry) -> bool:
     """Unload a config entry."""
+    _LOGGER.debug("Unloading WAGO I/O System integration for %s", entry.data[CONF_HOST])
+
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
