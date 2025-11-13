@@ -8,12 +8,15 @@ from typing import TYPE_CHECKING
 from homeassistant.const import CONF_HOST, Platform
 from homeassistant.core import HomeAssistant
 
+from .const import DOMAIN
 from .coordinator import WAGOIOSystemCoordinator
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
+
+__all__ = ["DOMAIN"]
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
