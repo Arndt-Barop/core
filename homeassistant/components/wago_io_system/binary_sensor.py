@@ -6,7 +6,7 @@ import logging
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import WAGOIOSystemConfigEntry
 from .coordinator import WAGOIOSystemCoordinator
@@ -16,11 +16,13 @@ from .module_registry import ModuleType
 
 _LOGGER = logging.getLogger(__name__)
 
+PARALLEL_UPDATES = 0
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: WAGOIOSystemConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up WAGO binary sensor entities."""
     coordinator = entry.runtime_data
