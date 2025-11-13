@@ -51,6 +51,8 @@ class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         )
         self._detected_modules: list[DetectedModule] | None = None
         self._process_image_size = 0
+        self._digital_input_bits = 0
+        self._analog_register_size = 0
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from the WAGO controller."""
@@ -141,43 +143,106 @@ class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         data["config_129_192"],
                         data["config_193_255"],
                     )
-                    # Calculate total process image size needed
-                    self._process_image_size = sum(
-                        module.spec.data_width_bits // 16
-                        for module in self._detected_modules
+
+                    # Calculate process image sizes separately for digital and analog
+                    # Digital modules use Coils (bit addressing)
+                    digital_modules = [
+                        m for m in self._detected_modules if m.spec.is_digital()
+                    ]
+                    analog_modules = [
+                        m for m in self._detected_modules if m.spec.is_analog()
+                    ]
+
+                    digital_bits = sum(m.spec.data_width_bits for m in digital_modules)
+                    analog_registers = sum(
+                        m.spec.data_width_bits // 16 for m in analog_modules
                     )
+
                     _LOGGER.debug(
-                        "Detected %d modules, process image size: %d registers",
+                        "Detected %d modules: %d digital (%d bits), %d analog (%d registers)",
                         len(self._detected_modules),
-                        self._process_image_size,
+                        len(digital_modules),
+                        digital_bits,
+                        len(analog_modules),
+                        analog_registers,
+                    )
+
+                    # Store sizes for later use
+                    self._digital_input_bits = digital_bits
+                    self._analog_register_size = analog_registers
+                    self._process_image_size = (
+                        analog_registers  # Keep for compatibility
                     )
 
                 # Read process image data if modules detected
-                if self._process_image_size > 0:
-                    read_size = min(self._process_image_size, MAX_PROCESS_IMAGE_SIZE)
+                # Digital I/O: Read via Coils (FC1/FC2) - bit addressing
+                # Analog I/O: Read via Holding Registers (FC3/FC4) - word addressing
 
-                    # Read input registers
-                    input_data = self.client.read_holding_registers(
+                # Read digital inputs (Discrete Inputs - FC2)
+                if self._digital_input_bits > 0:
+                    digital_input_data = self.client.read_discrete_inputs(
+                        PROCESS_INPUT_START, self._digital_input_bits
+                    )
+                    if digital_input_data is None:
+                        _LOGGER.warning("Failed to read digital input data (coils)")
+                        data["digital_inputs"] = []
+                    else:
+                        data["digital_inputs"] = digital_input_data
+                        _LOGGER.debug(
+                            "Read %d digital input bits", len(digital_input_data)
+                        )
+                else:
+                    data["digital_inputs"] = []
+
+                # Read digital outputs (Coils - FC1)
+                if self._digital_input_bits > 0:  # Use same bit count for outputs
+                    digital_output_data = self.client.read_coils(
+                        PROCESS_OUTPUT_START, self._digital_input_bits
+                    )
+                    if digital_output_data is None:
+                        _LOGGER.warning("Failed to read digital output data (coils)")
+                        data["digital_outputs"] = []
+                    else:
+                        data["digital_outputs"] = digital_output_data
+                        _LOGGER.debug(
+                            "Read %d digital output bits", len(digital_output_data)
+                        )
+                else:
+                    data["digital_outputs"] = []
+
+                # Read analog inputs (Input Registers - FC4)
+                if self._analog_register_size > 0:
+                    read_size = min(self._analog_register_size, MAX_PROCESS_IMAGE_SIZE)
+                    analog_input_data = self.client.read_input_registers(
                         PROCESS_INPUT_START, read_size
                     )
-                    if input_data is None:
-                        _LOGGER.warning("Failed to read process input data")
-                        data["process_inputs"] = []
+                    if analog_input_data is None:
+                        _LOGGER.warning("Failed to read analog input data (registers)")
+                        data["analog_inputs"] = []
                     else:
-                        data["process_inputs"] = input_data
+                        data["analog_inputs"] = analog_input_data
+                        _LOGGER.debug(
+                            "Read %d analog input registers", len(analog_input_data)
+                        )
+                else:
+                    data["analog_inputs"] = []
 
-                    # Read output registers
-                    output_data = self.client.read_holding_registers(
+                # Read analog outputs (Holding Registers - FC3)
+                if self._analog_register_size > 0:
+                    read_size = min(self._analog_register_size, MAX_PROCESS_IMAGE_SIZE)
+                    analog_output_data = self.client.read_holding_registers(
                         PROCESS_OUTPUT_START, read_size
                     )
-                    if output_data is None:
-                        _LOGGER.warning("Failed to read process output data")
-                        data["process_outputs"] = []
+                    if analog_output_data is None:
+                        _LOGGER.warning("Failed to read analog output data (registers)")
+                        data["analog_outputs"] = []
                     else:
-                        data["process_outputs"] = output_data
+                        data["analog_outputs"] = analog_output_data
+                        _LOGGER.debug(
+                            "Read %d analog output registers", len(analog_output_data)
+                        )
                 else:
-                    data["process_inputs"] = []
-                    data["process_outputs"] = []
+                    data["analog_outputs"] = []
 
                 return data
             finally:

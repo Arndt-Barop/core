@@ -37,29 +37,36 @@ async def async_setup_entry(
 
     entities = []
     for module in detected_modules:
-        if module.spec.module_type == ModuleType.ANALOG_INPUT:
-            for channel in range(module.spec.channels):
-                # Calculate register offset (analog inputs use multiple registers per channel)
-                registers_per_channel = module.spec.data_width_bits // (
-                    16 * module.spec.channels
-                )
-                register_offset = module.process_image_offset + (
-                    channel * registers_per_channel
-                )
+        # Only process analog input modules
+        if (
+            not module.spec.is_analog()
+            or module.spec.module_type != ModuleType.ANALOG_INPUT
+        ):
+            continue
 
-                entities.append(
-                    WAGOSensor(
-                        coordinator=coordinator,
-                        module_position=module.position,
-                        module_name=module.spec.name,
-                        channel=channel,
-                        device_class=module.spec.device_class,
-                        native_unit=module.spec.native_unit,
-                        min_value=module.spec.min_value,
-                        max_value=module.spec.max_value,
-                        register_offset=register_offset,
-                    )
+        for channel in range(module.spec.channels):
+            # Calculate register offset
+            # process_image_offset already contains the register offset for analog modules
+            registers_per_channel = module.spec.data_width_bits // (
+                16 * module.spec.channels
+            )
+            register_offset = module.process_image_offset + (
+                channel * registers_per_channel
+            )
+
+            entities.append(
+                WAGOSensor(
+                    coordinator=coordinator,
+                    module_position=module.position,
+                    module_name=module.spec.name,
+                    channel=channel,
+                    device_class=module.spec.device_class,
+                    native_unit=module.spec.native_unit,
+                    min_value=module.spec.min_value,
+                    max_value=module.spec.max_value,
+                    register_offset=register_offset,
                 )
+            )
 
     async_add_entities(entities)
 
@@ -92,14 +99,14 @@ class WAGOSensor(WAGOIOSystemEntity, SensorEntity):
     @property
     def native_value(self) -> float | None:
         """Return the state of the sensor."""
-        if not self.coordinator.data or "process_inputs" not in self.coordinator.data:
+        if not self.coordinator.data or "analog_inputs" not in self.coordinator.data:
             return None
 
-        process_inputs = self.coordinator.data["process_inputs"]
-        if self._register_offset >= len(process_inputs):
+        analog_inputs = self.coordinator.data["analog_inputs"]
+        if self._register_offset >= len(analog_inputs):
             return None
 
-        register_value = process_inputs[self._register_offset]
+        register_value = analog_inputs[self._register_offset]
         if register_value is None:
             return None
 

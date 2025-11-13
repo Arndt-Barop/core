@@ -16,7 +16,7 @@ class DetectedModule:
 
     position: int
     spec: WAGOModuleSpec
-    process_image_offset: int
+    process_image_offset: int  # For analog: register offset; for digital: bit offset
 
 
 def detect_modules(
@@ -41,7 +41,8 @@ def detect_modules(
 
     """
     detected: list[DetectedModule] = []
-    process_image_offset = 0
+    digital_bit_offset = 0  # Offset in bits for digital I/O (Coils)
+    analog_register_offset = 0  # Offset in 16-bit words for analog I/O (Registers)
 
     # Combine all config register arrays
     all_configs = config_1_64 + config_65_128 + config_129_192 + config_193_255
@@ -76,22 +77,41 @@ def detect_modules(
 
         spec = get_module_spec(module_id)
         if spec is not None:
+            # Use appropriate offset based on module type
+            if spec.is_digital():
+                current_offset = digital_bit_offset
+            else:
+                current_offset = analog_register_offset
+
             detected.append(
                 DetectedModule(
                     position=position,
                     spec=spec,
-                    process_image_offset=process_image_offset,
+                    process_image_offset=current_offset,
                 )
             )
-            # Calculate offset for next module (in 16-bit words)
-            process_image_offset += spec.data_width_bits // 16
-            _LOGGER.info(
-                "Detected module %s (%s) at position %d, offset %d",
-                spec.name,
-                hex(module_id),
-                position,
-                process_image_offset,
-            )
+
+            # Update offset for next module
+            if spec.is_digital():
+                # Digital modules: offset is in bits
+                digital_bit_offset += spec.data_width_bits
+                _LOGGER.info(
+                    "Detected module %s (%s) at position %d, digital bit offset %d",
+                    spec.name,
+                    hex(module_id),
+                    position,
+                    current_offset,
+                )
+            else:
+                # Analog modules: offset is in 16-bit registers
+                analog_register_offset += spec.data_width_bits // 16
+                _LOGGER.info(
+                    "Detected module %s (%s) at position %d, analog register offset %d",
+                    spec.name,
+                    hex(module_id),
+                    position,
+                    current_offset,
+                )
         else:
             _LOGGER.warning(
                 "Unknown module ID 0x%04X at position %d",

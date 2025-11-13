@@ -40,9 +40,8 @@ async def async_setup_entry(
     for module in detected_modules:
         if module.spec.module_type == ModuleType.DIGITAL_OUTPUT:
             for channel in range(module.spec.channels):
-                # Calculate register and bit offset
-                register_offset = module.process_image_offset
-                bit_offset = channel
+                # Calculate bit offset (digital outputs use bit addressing)
+                bit_offset = module.process_image_offset + channel
 
                 entities.append(
                     WAGOSwitch(
@@ -50,7 +49,6 @@ async def async_setup_entry(
                         module_position=module.position,
                         module_name=module.spec.name,
                         channel=channel,
-                        register_offset=register_offset,
                         bit_offset=bit_offset,
                     )
                 )
@@ -67,29 +65,23 @@ class WAGOSwitch(WAGOIOSystemEntity, SwitchEntity):
         module_position: int,
         module_name: str,
         channel: int,
-        register_offset: int,
         bit_offset: int,
     ) -> None:
         """Initialize the switch."""
         super().__init__(coordinator, module_position, module_name, channel)
-        self._register_offset = register_offset
         self._bit_offset = bit_offset
 
     @property
     def is_on(self) -> bool | None:
         """Return true if switch is on."""
-        if not self.coordinator.data or "process_outputs" not in self.coordinator.data:
+        if not self.coordinator.data or "digital_outputs" not in self.coordinator.data:
             return None
 
-        process_outputs = self.coordinator.data["process_outputs"]
-        if self._register_offset >= len(process_outputs):
+        digital_outputs = self.coordinator.data["digital_outputs"]
+        if self._bit_offset >= len(digital_outputs):
             return None
 
-        register_value = process_outputs[self._register_offset]
-        if register_value is None:
-            return None
-
-        return bool(register_value & (1 << self._bit_offset))
+        return digital_outputs[self._bit_offset]
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
@@ -100,43 +92,29 @@ class WAGOSwitch(WAGOIOSystemEntity, SwitchEntity):
         await self._write_output(False)
 
     async def _write_output(self, state: bool) -> None:
-        """Write output state to Modbus register."""
+        """Write output state to Modbus coil."""
 
-        def _write_register() -> bool:
-            """Write to Modbus output register."""
+        def _write_coil() -> bool:
+            """Write to Modbus output coil."""
             if not self.coordinator.client.open():
                 _LOGGER.error("Failed to connect to WAGO controller for write")
                 return False
 
             try:
-                # Read current register value
-                current_value = self.coordinator.client.read_holding_registers(
-                    0x0200 + self._register_offset, 1
-                )
-                if current_value is None:
-                    _LOGGER.error("Failed to read current output register value")
-                    return False
-
-                # Modify the specific bit
-                new_value = current_value[0]
-                if state:
-                    new_value |= 1 << self._bit_offset  # Set bit
-                else:
-                    new_value &= ~(1 << self._bit_offset)  # Clear bit
-
-                # Write modified value back
-                success = self.coordinator.client.write_single_register(
-                    0x0200 + self._register_offset, new_value
+                # Write directly to coil (no read-modify-write needed for coils)
+                # WAGO uses 0x0200 as start address for process outputs
+                success = self.coordinator.client.write_single_coil(
+                    0x0200 + self._bit_offset, state
                 )
                 if not success:
-                    _LOGGER.error("Failed to write output register")
+                    _LOGGER.error("Failed to write output coil %d", self._bit_offset)
                     return False
 
                 return True
             finally:
                 self.coordinator.client.close()
 
-        success = await self.hass.async_add_executor_job(_write_register)
+        success = await self.hass.async_add_executor_job(_write_coil)
         if success:
             # Request coordinator refresh to update state
             await self.coordinator.async_request_refresh()

@@ -32,6 +32,14 @@ class WAGOModuleSpec:
     min_value: float | None = None
     max_value: float | None = None
 
+    def is_digital(self) -> bool:
+        """Return True if this is a digital I/O module (uses Coils, not Registers)."""
+        return self.module_type in (ModuleType.DIGITAL_INPUT, ModuleType.DIGITAL_OUTPUT)
+
+    def is_analog(self) -> bool:
+        """Return True if this is an analog I/O module (uses Holding Registers)."""
+        return self.module_type in (ModuleType.ANALOG_INPUT, ModuleType.ANALOG_OUTPUT)
+
 
 WAGO_MODULE_REGISTRY: dict[int, WAGOModuleSpec] = {
     # Coupler/Controller (position 0)
