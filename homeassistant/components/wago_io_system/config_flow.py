@@ -36,31 +36,42 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
     # Test connection to Modbus device
     client = ModbusClient(
-        host=host, port=port, timeout=DEFAULT_TIMEOUT, auto_open=False
+        host=host,
+        port=port,
+        unit_id=1,  # WAGO controllers use unit ID 1
+        timeout=DEFAULT_TIMEOUT,
+        auto_open=False,
     )
 
     def _test_connection() -> tuple[bool, str | None]:
-        """Test connection and get device MAC address in executor.
+        """Test connection and try to get device MAC address in executor.
 
         Returns tuple of (success, mac_address).
-        MAC address is read from Modbus registers 0x2010-0x2012 (3 words).
+        MAC address is attempted from Modbus registers 0x2010-0x2012 (3 words).
+        Falls back to host:port if MAC not available (e.g., older controllers).
         """
         if not client.open():
             return False, None
 
         try:
-            # Read MAC address from registers 0x2010-0x2012 (6 bytes = 3 registers)
+            # Try to read MAC address from registers 0x2010-0x2012 (6 bytes = 3 registers)
+            # This may not be available on all WAGO controllers
             mac_registers = client.read_holding_registers(0x2010, 3)
-            if mac_registers is None:
-                return False, None
-
-            # Convert registers to MAC address string
-            mac_bytes: list[int] = []
-            for reg in mac_registers:
-                if reg is not None:
-                    mac_bytes.append((reg >> 8) & 0xFF)  # High byte
-                    mac_bytes.append(reg & 0xFF)  # Low byte
-            mac_address = ":".join(f"{b:02x}" for b in mac_bytes)
+        except OSError:
+            # Connection worked but register read failed - use host:port as identifier
+            return True, f"{host}:{port}"
+        else:
+            if mac_registers and all(r is not None for r in mac_registers):
+                # Convert registers to MAC address string
+                mac_bytes: list[int] = []
+                for reg in mac_registers:
+                    if reg is not None:  # Type guard for mypy
+                        mac_bytes.append((reg >> 8) & 0xFF)  # High byte
+                        mac_bytes.append(reg & 0xFF)  # Low byte
+                mac_address = ":".join(f"{b:02x}" for b in mac_bytes)
+            else:
+                # MAC not available - use host:port as unique identifier
+                mac_address = f"{host}:{port}"
 
             return True, mac_address
         finally:
