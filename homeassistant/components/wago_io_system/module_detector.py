@@ -20,18 +20,21 @@ class DetectedModule:
 
 
 def detect_modules(
-    config_1_64: int,
-    config_65_128: int,
-    config_129_192: int,
-    config_193_255: int,
+    config_1_64: list[int],
+    config_65_128: list[int],
+    config_129_192: list[int],
+    config_193_255: list[int],
 ) -> list[DetectedModule]:
     """Detect WAGO modules from configuration registers.
 
+    Each register contains the module ID directly. For digital modules,
+    bit 15 is set and bits 8-14 contain the module size.
+
     Args:
-        config_1_64: Configuration register for modules 1-64 (0x2030)
-        config_65_128: Configuration register for modules 65-128 (0x2031)
-        config_129_192: Configuration register for modules 129-192 (0x2032)
-        config_193_255: Configuration register for modules 193-255 (0x2033)
+        config_1_64: Configuration registers for modules 0-64 (0x2030)
+        config_65_128: Configuration registers for modules 65-128 (0x2031)
+        config_129_192: Configuration registers for modules 129-192 (0x2032)
+        config_193_255: Configuration registers for modules 193-255 (0x2033)
 
     Returns:
         List of detected modules with position and specification
@@ -40,66 +43,60 @@ def detect_modules(
     detected: list[DetectedModule] = []
     process_image_offset = 0
 
-    config_registers = [config_1_64, config_65_128, config_129_192, config_193_255]
+    # Combine all config register arrays
+    all_configs = config_1_64 + config_65_128 + config_129_192 + config_193_255
 
-    for register_idx, config_value in enumerate(config_registers):
-        base_position = register_idx * 64 + 1
+    for position, module_value in enumerate(all_configs):
+        if module_value == 0:
+            continue  # No module at this position
 
-        for bit_position in range(16):
-            if config_value & (1 << bit_position):
-                module_position = base_position + bit_position
-                module_id = _read_module_id(module_position, config_value, bit_position)
+        # Check if this is a digital module (bit 15 set)
+        is_digital = bool(module_value & 0x8000)
 
-                if module_id is not None:
-                    spec = get_module_spec(module_id)
-                    if spec is not None:
-                        detected.append(
-                            DetectedModule(
-                                position=module_position,
-                                spec=spec,
-                                process_image_offset=process_image_offset,
-                            )
-                        )
-                        process_image_offset += spec.data_width_bits // 16
-                        _LOGGER.debug(
-                            "Detected module %s (%s) at position %d, offset %d",
-                            spec.name,
-                            hex(module_id),
-                            module_position,
-                            process_image_offset,
-                        )
-                    else:
-                        _LOGGER.warning(
-                            "Unknown module ID %s at position %d",
-                            hex(module_id) if module_id else "None",
-                            module_position,
-                        )
+        if is_digital:
+            # Digital module: bits 8-14 contain size, bits 0-1 contain type
+            module_size = (module_value >> 8) & 0x7F  # Bits 8-14
+            is_input = bool(module_value & 0x01)  # Bit 0
+            is_output = bool(module_value & 0x02)  # Bit 1
+
+            _LOGGER.debug(
+                "Digital module at position %d: size=%d bits, input=%s, output=%s",
+                position,
+                module_size,
+                is_input,
+                is_output,
+            )
+
+            # For digital modules, we create a synthetic module ID
+            # This is handled by the module registry
+            module_id = module_value
+        else:
+            # Analog/complex module: value is the order number (without 750- prefix)
+            module_id = module_value
+
+        spec = get_module_spec(module_id)
+        if spec is not None:
+            detected.append(
+                DetectedModule(
+                    position=position,
+                    spec=spec,
+                    process_image_offset=process_image_offset,
+                )
+            )
+            # Calculate offset for next module (in 16-bit words)
+            process_image_offset += spec.data_width_bits // 16
+            _LOGGER.info(
+                "Detected module %s (%s) at position %d, offset %d",
+                spec.name,
+                hex(module_id),
+                position,
+                process_image_offset,
+            )
+        else:
+            _LOGGER.warning(
+                "Unknown module ID 0x%04X at position %d",
+                module_id,
+                position,
+            )
 
     return detected
-
-
-def _read_module_id(position: int, config_value: int, bit_position: int) -> int | None:
-    """Read module ID from configuration register.
-
-    The module ID is encoded in the configuration register bits.
-    For digital modules, bit 15 is set to 1.
-
-    Args:
-        position: Module position (1-255)
-        config_value: Configuration register value
-        bit_position: Bit position in register (0-15)
-
-    Returns:
-        Module ID or None if not detected
-
-    """
-    # Extract module ID from configuration bits
-    # In WAGO systems, the module ID is typically encoded in the register value
-    # For this implementation, we assume the register bit indicates presence
-    # and the actual module ID needs to be read from a separate register or
-    # is encoded in the configuration value itself
-
-    # For now, return the configuration value as module ID
-    # This is a simplified implementation and may need adjustment
-    # based on actual WAGO protocol documentation
-    return config_value if config_value != 0 else None
