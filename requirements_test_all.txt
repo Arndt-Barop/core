@@ -1561,6 +1561,9 @@ pyElectra==1.2.4
 # homeassistant.components.homee
 pyHomee==1.3.8
 
+# homeassistant.components.wago_io_system
+pyModbusTCP==0.1.10
+
 # homeassistant.components.wago_energymeter
 pyModbusTCP==v0.1.10
 

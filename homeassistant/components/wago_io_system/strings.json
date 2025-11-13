@@ -8,6 +8,11 @@
           "host": "IP address or hostname",
           "port": "Modbus TCP port",
           "scan_interval": "Scan interval (seconds)"
+        },
+        "data_description": {
+          "host": "Hostname or IP address of the WAGO controller",
+          "port": "Modbus TCP port (default: 502)",
+          "scan_interval": "Time interval between updates in seconds"
         }
       }
     },

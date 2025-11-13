@@ -24,9 +24,13 @@ PLATFORMS: list[Platform] = [
 type WAGOIOSystemConfigEntry = ConfigEntry[WAGOIOSystemCoordinator]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: WAGOIOSystemConfigEntry) -> bool:
+async def async_setup_entry(
+    hass: HomeAssistant, entry: WAGOIOSystemConfigEntry
+) -> bool:
     """Set up WAGO I/O System from a config entry."""
-    _LOGGER.debug("Setting up WAGO I/O System integration for %s", entry.data[CONF_HOST])
+    _LOGGER.debug(
+        "Setting up WAGO I/O System integration for %s", entry.data[CONF_HOST]
+    )
 
     coordinator = WAGOIOSystemCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
@@ -38,7 +42,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: WAGOIOSystemConfigEntry)
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: WAGOIOSystemConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, entry: WAGOIOSystemConfigEntry
+) -> bool:
     """Unload a config entry."""
     _LOGGER.debug("Unloading WAGO I/O System integration for %s", entry.data[CONF_HOST])
 
