@@ -10,6 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WAGOIOSystemConfigEntry
 from .coordinator import WAGOIOSystemCoordinator
+from .entity import WAGOIOSystemEntity
 from .module_detector import detect_modules
 from .module_registry import ModuleType
 
@@ -48,10 +49,8 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class WAGOBinarySensor(BinarySensorEntity):
+class WAGOBinarySensor(WAGOIOSystemEntity, BinarySensorEntity):
     """Representation of a WAGO binary sensor."""
-
-    _attr_has_entity_name = True
 
     def __init__(
         self,
@@ -62,19 +61,8 @@ class WAGOBinarySensor(BinarySensorEntity):
         device_class,
     ) -> None:
         """Initialize the binary sensor."""
-        self.coordinator = coordinator
-        self._module_position = module_position
-        self._module_name = module_name
-        self._channel = channel
+        super().__init__(coordinator, module_position, module_name, channel)
         self._attr_device_class = device_class
-
-        # Generate unique ID
-        self._attr_unique_id = (
-            f"{coordinator.config_entry.entry_id}_m{module_position}_ch{channel}"
-        )
-
-        # Set entity name
-        self._attr_name = f"Module {module_position} Channel {channel}"
 
     @property
     def is_on(self) -> bool | None:
@@ -82,8 +70,3 @@ class WAGOBinarySensor(BinarySensorEntity):
         # TODO: Read actual process image data from coordinator
         # For now, return None (unknown state)
         return None
-
-    @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return self.coordinator.last_update_success

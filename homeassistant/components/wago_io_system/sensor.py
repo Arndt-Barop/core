@@ -10,6 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WAGOIOSystemConfigEntry
 from .coordinator import WAGOIOSystemCoordinator
+from .entity import WAGOIOSystemEntity
 from .module_detector import detect_modules
 from .module_registry import ModuleType
 
@@ -51,10 +52,9 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class WAGOSensor(SensorEntity):
+class WAGOSensor(WAGOIOSystemEntity, SensorEntity):
     """Representation of a WAGO sensor."""
 
-    _attr_has_entity_name = True
     _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(
@@ -69,22 +69,11 @@ class WAGOSensor(SensorEntity):
         max_value: float | None,
     ) -> None:
         """Initialize the sensor."""
-        self.coordinator = coordinator
-        self._module_position = module_position
-        self._module_name = module_name
-        self._channel = channel
+        super().__init__(coordinator, module_position, module_name, channel)
         self._attr_device_class = device_class
         self._attr_native_unit_of_measurement = native_unit
         self._min_value = min_value
         self._max_value = max_value
-
-        # Generate unique ID
-        self._attr_unique_id = (
-            f"{coordinator.config_entry.entry_id}_m{module_position}_ch{channel}"
-        )
-
-        # Set entity name
-        self._attr_name = f"Module {module_position} Channel {channel}"
 
     @property
     def native_value(self) -> float | None:
@@ -92,8 +81,3 @@ class WAGOSensor(SensorEntity):
         # TODO: Read actual process image data from coordinator
         # For now, return None (unknown state)
         return None
-
-    @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return self.coordinator.last_update_success

@@ -11,6 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WAGOIOSystemConfigEntry
 from .coordinator import WAGOIOSystemCoordinator
+from .entity import WAGOIOSystemEntity
 from .module_detector import detect_modules
 from .module_registry import ModuleType
 
@@ -48,10 +49,8 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class WAGOSwitch(SwitchEntity):
+class WAGOSwitch(WAGOIOSystemEntity, SwitchEntity):
     """Representation of a WAGO switch."""
-
-    _attr_has_entity_name = True
 
     def __init__(
         self,
@@ -61,18 +60,7 @@ class WAGOSwitch(SwitchEntity):
         channel: int,
     ) -> None:
         """Initialize the switch."""
-        self.coordinator = coordinator
-        self._module_position = module_position
-        self._module_name = module_name
-        self._channel = channel
-
-        # Generate unique ID
-        self._attr_unique_id = (
-            f"{coordinator.config_entry.entry_id}_m{module_position}_ch{channel}"
-        )
-
-        # Set entity name
-        self._attr_name = f"Module {module_position} Channel {channel}"
+        super().__init__(coordinator, module_position, module_name, channel)
 
     @property
     def is_on(self) -> bool | None:
@@ -96,8 +84,3 @@ class WAGOSwitch(SwitchEntity):
             self._module_position,
             self._channel,
         )
-
-    @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return self.coordinator.last_update_success
