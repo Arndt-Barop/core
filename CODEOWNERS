@@ -1749,7 +1749,10 @@ build.json @home-assistant/supervisor
 /tests/components/volvo/ @thomasddn
 /homeassistant/components/volvooncall/ @molobrakos @svrooij
 /tests/components/volvooncall/ @molobrakos @svrooij
-/homeassistant/components/wago_energymeter/ @Thomas-Brandt
+/homeassistant/components/wago_energymeter/ @Thomas-Brandt @Arndt-Barop
+/tests/components/wago_energymeter/ @Thomas-Brandt @Arndt-Barop
+/homeassistant/components/wago_io_system/ @Thomas-Brandt @Arndt-Barop
+/tests/components/wago_io_system/ @Thomas-Brandt @Arndt-Barop
 /homeassistant/components/wake_on_lan/ @ntilley905
 /tests/components/wake_on_lan/ @ntilley905
 /homeassistant/components/wake_word/ @home-assistant/core @synesthesiam
