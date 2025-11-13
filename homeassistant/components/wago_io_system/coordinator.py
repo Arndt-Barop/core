@@ -21,7 +21,11 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DEFAULT_TIMEOUT,
     DOMAIN,
+    MAX_PROCESS_IMAGE_SIZE,
+    PROCESS_INPUT_START,
+    PROCESS_OUTPUT_START,
 )
+from .module_detector import detect_modules
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -47,16 +51,19 @@ class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             timeout=DEFAULT_TIMEOUT,
             auto_open=False,
         )
+        self._detected_modules = None
+        self._process_image_size = 0
 
     async def _async_update_data(self) -> dict[str, Any]:
         """Fetch data from the WAGO controller."""
 
-        def _read_config_registers() -> dict[str, Any]:
-            """Read module configuration registers via Modbus."""
+        def _read_all_data() -> dict[str, Any]:
+            """Read configuration and process image data via Modbus."""
             if not self.client.open():
                 raise UpdateFailed("Failed to connect to WAGO controller")
 
             try:
+                # Read configuration registers
                 config_1_64 = self.client.read_holding_registers(CONFIG_REG_1_64, 1)
                 config_65_128 = self.client.read_holding_registers(CONFIG_REG_65_128, 1)
                 config_129_192 = self.client.read_holding_registers(
@@ -74,17 +81,65 @@ class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 ):
                     raise UpdateFailed("Failed to read configuration registers")
 
-                return {
+                data = {
                     "config_1_64": config_1_64[0],
                     "config_65_128": config_65_128[0],
                     "config_129_192": config_129_192[0],
                     "config_193_255": config_193_255[0],
                 }
+
+                # Detect modules on first run or if not cached
+                if self._detected_modules is None:
+                    self._detected_modules = detect_modules(
+                        data["config_1_64"],
+                        data["config_65_128"],
+                        data["config_129_192"],
+                        data["config_193_255"],
+                    )
+                    # Calculate total process image size needed
+                    self._process_image_size = sum(
+                        module.spec.data_width_bits // 16
+                        for module in self._detected_modules
+                    )
+                    _LOGGER.debug(
+                        "Detected %d modules, process image size: %d registers",
+                        len(self._detected_modules),
+                        self._process_image_size,
+                    )
+
+                # Read process image data if modules detected
+                if self._process_image_size > 0:
+                    read_size = min(self._process_image_size, MAX_PROCESS_IMAGE_SIZE)
+
+                    # Read input registers
+                    input_data = self.client.read_holding_registers(
+                        PROCESS_INPUT_START, read_size
+                    )
+                    if input_data is None:
+                        _LOGGER.warning("Failed to read process input data")
+                        data["process_inputs"] = []
+                    else:
+                        data["process_inputs"] = input_data
+
+                    # Read output registers
+                    output_data = self.client.read_holding_registers(
+                        PROCESS_OUTPUT_START, read_size
+                    )
+                    if output_data is None:
+                        _LOGGER.warning("Failed to read process output data")
+                        data["process_outputs"] = []
+                    else:
+                        data["process_outputs"] = output_data
+                else:
+                    data["process_inputs"] = []
+                    data["process_outputs"] = []
+
+                return data
             finally:
                 self.client.close()
 
         try:
-            return await self.hass.async_add_executor_job(_read_config_registers)
+            return await self.hass.async_add_executor_job(_read_all_data)
         except UpdateFailed:
             raise
         except Exception as err:
