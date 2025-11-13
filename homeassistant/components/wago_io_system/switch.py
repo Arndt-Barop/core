@@ -91,16 +91,57 @@ class WAGOSwitch(WAGOIOSystemEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the switch on."""
-        # TODO: Implement Modbus write to set output high
-        _LOGGER.debug(
-            "Turn on switch: Module %d Channel %d", self._module_position, self._channel
-        )
+        await self._write_output(True)
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
-        # TODO: Implement Modbus write to set output low
-        _LOGGER.debug(
-            "Turn off switch: Module %d Channel %d",
-            self._module_position,
-            self._channel,
-        )
+        await self._write_output(False)
+
+    async def _write_output(self, state: bool) -> None:
+        """Write output state to Modbus register."""
+
+        def _write_register() -> bool:
+            """Write to Modbus output register."""
+            if not self.coordinator.client.open():
+                _LOGGER.error("Failed to connect to WAGO controller for write")
+                return False
+
+            try:
+                # Read current register value
+                current_value = self.coordinator.client.read_holding_registers(
+                    0x0200 + self._register_offset, 1
+                )
+                if current_value is None:
+                    _LOGGER.error("Failed to read current output register value")
+                    return False
+
+                # Modify the specific bit
+                new_value = current_value[0]
+                if state:
+                    new_value |= 1 << self._bit_offset  # Set bit
+                else:
+                    new_value &= ~(1 << self._bit_offset)  # Clear bit
+
+                # Write modified value back
+                success = self.coordinator.client.write_single_register(
+                    0x0200 + self._register_offset, new_value
+                )
+                if not success:
+                    _LOGGER.error("Failed to write output register")
+                    return False
+
+                return True
+            finally:
+                self.coordinator.client.close()
+
+        success = await self.hass.async_add_executor_job(_write_register)
+        if success:
+            # Request coordinator refresh to update state
+            await self.coordinator.async_request_refresh()
+        else:
+            _LOGGER.warning(
+                "Failed to %s switch: Module %d Channel %d",
+                "turn on" if state else "turn off",
+                self._module_position,
+                self._channel,
+            )
