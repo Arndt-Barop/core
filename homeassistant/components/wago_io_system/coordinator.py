@@ -29,6 +29,8 @@ _LOGGER = logging.getLogger(__name__)
 class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Coordinator to manage data updates from WAGO I/O System."""
 
+    config_entry: ConfigEntry
+
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the coordinator."""
         super().__init__(
@@ -38,6 +40,7 @@ class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL),
             config_entry=config_entry,
         )
+        self.config_entry = config_entry
         self.client = ModbusClient(
             host=config_entry.data[CONF_HOST],
             port=config_entry.data[CONF_PORT],
@@ -85,4 +88,6 @@ class WAGOIOSystemCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         except UpdateFailed:
             raise
         except Exception as err:
-            raise UpdateFailed(f"Error communicating with WAGO controller: {err}") from err
+            raise UpdateFailed(
+                f"Error communicating with WAGO controller: {err}"
+            ) from err
