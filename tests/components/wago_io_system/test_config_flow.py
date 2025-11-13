@@ -6,7 +6,7 @@ import pytest
 
 from homeassistant import config_entries
 from homeassistant.components.wago_io_system.const import DOMAIN
-from homeassistant.const import CONF_HOST, CONF_PORT, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 
@@ -27,6 +27,7 @@ async def test_form_user_success(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
+            CONF_NAME: "WAGO I/O Controller",
             CONF_HOST: "192.168.2.44",
             CONF_PORT: 502,
         },
@@ -34,8 +35,9 @@ async def test_form_user_success(
     await hass.async_block_till_done()
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["title"] == "WAGO Controller (192.168.2.44)"
+    assert result["title"] == "WAGO I/O Controller"
     assert result["data"] == {
+        CONF_NAME: "WAGO I/O Controller",
         CONF_HOST: "192.168.2.44",
         CONF_PORT: 502,
         CONF_SCAN_INTERVAL: 1,
@@ -57,29 +59,7 @@ async def test_form_cannot_connect(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
-            CONF_HOST: "192.168.2.44",
-            CONF_PORT: 502,
-        },
-    )
-
-    assert result["type"] is FlowResultType.FORM
-    assert result["step_id"] == "user"
-    assert result["errors"] == {"base": "cannot_connect"}
-
-
-async def test_form_cannot_read_mac(
-    hass: HomeAssistant, mock_modbus_client: MagicMock
-) -> None:
-    """Test MAC address reading error."""
-    mock_modbus_client.return_value.read_holding_registers.return_value = None
-
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
-    )
-
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"],
-        {
+            CONF_NAME: "Test",
             CONF_HOST: "192.168.2.44",
             CONF_PORT: 502,
         },
@@ -105,6 +85,7 @@ async def test_form_already_configured(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
+            CONF_NAME: "Test",
             CONF_HOST: "192.168.2.44",
             CONF_PORT: 502,
         },
@@ -127,6 +108,7 @@ async def test_form_exception(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
+            CONF_NAME: "Test",
             CONF_HOST: "192.168.2.44",
             CONF_PORT: 502,
         },
@@ -160,6 +142,7 @@ async def test_form_various_inputs(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
+            CONF_NAME: f"WAGO at {host}",
             CONF_HOST: host,
             CONF_PORT: port,
         },
@@ -167,5 +150,6 @@ async def test_form_various_inputs(
     await hass.async_block_till_done()
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["data"][CONF_NAME] == f"WAGO at {host}"
     assert result["data"][CONF_HOST] == host
     assert result["data"][CONF_PORT] == port

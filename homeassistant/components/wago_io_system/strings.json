@@ -5,11 +5,13 @@
         "title": "Connect to WAGO I/O System",
         "description": "Configure your WAGO I/O controller connection",
         "data": {
+          "name": "Name",
           "host": "IP address or hostname",
           "port": "Modbus TCP port",
           "scan_interval": "Scan interval (seconds)"
         },
         "data_description": {
+          "name": "Name for this WAGO I/O controller",
           "host": "Hostname or IP address of the WAGO controller",
           "port": "Modbus TCP port (default: 502)",
           "scan_interval": "Time interval between updates in seconds"

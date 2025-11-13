@@ -9,7 +9,7 @@ from pyModbusTCP.client import ModbusClient
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
-from homeassistant.const import CONF_HOST, CONF_PORT, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 
@@ -19,6 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
+        vol.Required(CONF_NAME): str,
         vol.Required(CONF_HOST): str,
         vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
@@ -85,7 +86,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     if mac_address is None:
         raise CannotConnect
 
-    return {"title": f"WAGO Controller ({host})", "mac": mac_address}
+    return {"title": data[CONF_NAME], "mac": mac_address}
 
 
 class CannotConnect(HomeAssistantError):
